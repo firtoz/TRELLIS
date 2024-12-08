@@ -1,5 +1,7 @@
 # TRELLIS
 
+🚀 **[Try TRELLIS on Replicate](https://replicate.com/firtoz/trellis)** - Generate 3D models from images in your browser!
+
 > **Note**: This Replicate deployment is maintained by firtoz, a fan of the TRELLIS project, and is not officially affiliated with Microsoft or the TRELLIS team. All rights, licenses, and intellectual property belong to Microsoft. For the original project, please visit [microsoft/TRELLIS](https://github.com/microsoft/TRELLIS).
 
 TRELLIS is a powerful 3D asset generation model that converts text or image prompts into high-quality 3D assets. This Replicate deployment focuses on the image-to-3D generation capabilities of TRELLIS.
