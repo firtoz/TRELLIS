@@ -3,18 +3,13 @@
 <p align="center"><a href="https://arxiv.org/abs/2412.01506"><img src='https://img.shields.io/badge/arXiv-Paper-red?logo=arxiv&logoColor=white' alt='arXiv'></a>
 <a href='https://microsoft.github.io/TRELLIS/'><img src='https://img.shields.io/badge/Project_Page-Website-green?logo=googlechrome&logoColor=white' alt='Project Page'></a>
 <a href='https://huggingface.co/spaces/Microsoft/TRELLIS'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live_Demo-blue'></a>
+<a href='https://replicate.com/firtoz/trellis'><img src='https://img.shields.io/badge/Replicate-Try_in_Browser-orange?logo=replicate&logoColor=white'></a>
 </p>
 <p align="center"><img src="assets/teaser.png" width="100%"></p>
 
-<span style="font-size: 16px; font-weight: 600;">T</span><span style="font-size: 12px; font-weight: 700;">RELLIS</span> is a large 3D asset generation model. It takes in text or image prompts and generates high-quality 3D assets in various formats, such as Radiance Fields, 3D Gaussians, and meshes. The cornerstone of <span style="font-size: 16px; font-weight: 600;">T</span><span style="font-size: 12px; font-weight: 700;">RELLIS</span> is a unified Structured LATent (<span style="font-size: 16px; font-weight: 600;">SL</span><span style="font-size: 12px; font-weight: 700;">AT</span>) representation that allows decoding to different output formats and Rectified Flow Transformers tailored for <span style="font-size: 16px; font-weight: 600;">SL</span><span style="font-size: 12px; font-weight: 700;">AT</span> as the powerful backbones. We provide large-scale pre-trained models with up to 2 billion parameters on a large 3D asset dataset of 500K diverse objects. <span style="font-size: 16px; font-weight: 600;">T</span><span style="font-size: 12px; font-weight: 700;">RELLIS</span> significantly surpasses existing methods, including recent ones at similar scales, and showcases flexible output format selection and local 3D editing capabilities which were not offered by previous models.
-
 ***Check out our [Project Page](https://microsoft.github.io/TRELLIS/) for more videos and interactive demos!***
 
-<!-- Features -->
-## 🌟 Features
-- **High Quality**: It produces diverse 3D assets at high quality with intricate shape and texture details.
-- **Versatility**: It takes text or image prompts and can generate various final 3D representations including but not limited to *Radiance Fields*, *3D Gaussians*, and *meshes*, accommodating diverse downstream requirements.
-- **Flexible Editing**: It allows for easy editings of generated 3D assets, such as generating variants of the same object or local editing of the 3D asset.
+> **Note**: This fork includes a [Replicate deployment](https://replicate.com/firtoz/trellis) for easy browser-based usage. Try TRELLIS directly in your browser without any setup!
 
 <!-- Updates -->
 ## ⏩ Updates
@@ -33,22 +28,15 @@
 - Implementation of multi-image conditioning for **TRELLIS-image** model. ([#7](https://github.com/microsoft/TRELLIS/issues/7)). This is based on tuning-free algorithm without training a specialized model, so it may not give the best results for all input images.
 - Add Gaussian export in `app.py` and `example.py`. ([#40](https://github.com/microsoft/TRELLIS/issues/40))
 
+
 <!-- Installation -->
-## 📦 Installation
+## 🛠️ Installation
 
-### Prerequisites
-- **System**: The code is currently tested only on **Linux**.  For windows setup, you may refer to [#3](https://github.com/microsoft/TRELLIS/issues/3) (not fully tested).
-- **Hardware**: An NVIDIA GPU with at least 16GB of memory is necessary. The code has been verified on NVIDIA A100 and A6000 GPUs.  
-- **Software**:   
-  - The [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit-archive) is needed to compile certain submodules. The code has been tested with CUDA versions 11.8 and 12.2.  
-  - [Conda](https://docs.anaconda.com/miniconda/install/#quick-command-line-install) is recommended for managing dependencies.  
-  - Python version 3.8 or higher is required. 
-
-### Installation Steps
-1. Clone the repo:
+1. Clone the repository:
     ```sh
-    git clone --recurse-submodules https://github.com/microsoft/TRELLIS.git
+    git clone https://github.com/microsoft/TRELLIS.git
     cd TRELLIS
+    git submodule update --init --recursive
     ```
 
 2. Install the dependencies:
@@ -83,10 +71,9 @@
         --demo                  Install all dependencies for demo
     ```
 
-<!-- Pretrained Models -->
-## 🤖 Pretrained Models
 
-We provide the following pretrained models:
+<!-- Models -->
+## 🤖 Models
 
 | Model | Description | #Params | Download |
 | --- | --- | --- | --- |
@@ -99,30 +86,40 @@ We provide the following pretrained models:
 
 *Note: All VAEs are included in **TRELLIS-image-large** model repo.*
 
-The models are hosted on Hugging Face. You can directly load the models with their repository names in the code:
-```python
-TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS-image-large")
-```
-
-If you prefer loading the model from local, you can download the model files from the links above and load the model with the folder path (folder structure should be maintained):
-```python
-TrellisImageTo3DPipeline.from_pretrained("/path/to/TRELLIS-image-large")
-```
 
 <!-- Usage -->
-## 💡 Usage
+## 🚀 Quick Start
 
-### Minimal Example
+### Replicate (Browser)
 
-Here is an [example](example.py) of how to use the pretrained models for 3D asset generation.
+Try TRELLIS directly in your browser at [replicate.com/firtoz/trellis](https://replicate.com/firtoz/trellis) or use the API:
 
 ```python
-import os
-# os.environ['ATTN_BACKEND'] = 'xformers'   # Can be 'flash-attn' or 'xformers', default is 'flash-attn'
-os.environ['SPCONV_ALGO'] = 'native'        # Can be 'native' or 'auto', default is 'auto'.
-                                            # 'auto' is faster but will do benchmarking at the beginning.
-                                            # Recommended to set to 'native' if run only once.
+import replicate
 
+output = replicate.run(
+    "firtoz/trellis:version",
+    input={
+        "seed": 0,
+        "image": "https://replicate.delivery/pbxt/M6rvlcKpjcTijzvLfJw8SCWQ74M1jrxowbVDT6nNTxREcvxO/ephemeros_cartoonish_character_art_cyberpunk_crocodile_white_ba_486fb649-bc68-46a0-b429-751b43734b89.png",
+        "texture_size": 1024,
+        "mesh_simplify": 0.95,
+        "generate_color": True,
+        "generate_model": True,
+        "randomize_seed": True,
+        "generate_normal": True,
+        "ss_sampling_steps": 12,
+        "slat_sampling_steps": 12,
+        "ss_guidance_strength": 7.5,
+        "slat_guidance_strength": 3
+    }
+)
+print(output)
+```
+
+### Local Usage
+
+```python
 import imageio
 from PIL import Image
 from trellis.pipelines import TrellisImageTo3DPipeline
@@ -182,7 +179,6 @@ After running the code, you will get the following files:
 - `sample_mesh.mp4`: a video showing the mesh representation
 - `sample.glb`: a GLB file containing the extracted textured mesh
 - `sample.ply`: a PLY file containing the 3D Gaussian representation
-
 
 ### Web Demo
 
@@ -322,13 +318,11 @@ python train.py \
 
 Adjust the file paths and parameters to match your experimental setup.
 
-
 <!-- License -->
 ## ⚖️ License
 
 TRELLIS models and the majority of the code are licensed under the [MIT License](LICENSE). The following submodules may have different licenses:
 - [**diffoctreerast**](https://github.com/JeffreyXiang/diffoctreerast): We developed a CUDA-based real-time differentiable octree renderer for rendering radiance fields as part of this project. This renderer is derived from the [diff-gaussian-rasterization](https://github.com/graphdeco-inria/diff-gaussian-rasterization) project and is available under the [LICENSE](https://github.com/JeffreyXiang/diffoctreerast/blob/master/LICENSE).
-
 
 - [**Modified Flexicubes**](https://github.com/MaxtirError/FlexiCubes): In this project, we used a modified version of [Flexicubes](https://github.com/nv-tlabs/FlexiCubes) to support vertex attributes. This modified version is licensed under the [LICENSE](https://github.com/nv-tlabs/FlexiCubes/blob/main/LICENSE.txt).
 
@@ -347,3 +341,9 @@ If you find this work helpful, please consider citing our paper:
 }
 ```
 
+## Links
+
+- [Project Page](https://trellis3d.github.io)
+- [Paper](https://arxiv.org/abs/2412.01506)
+- [GitHub Repository](https://github.com/microsoft/TRELLIS)
+- [Hugging Face Demo](https://huggingface.co/spaces/JeffreyXiang/TRELLIS)
