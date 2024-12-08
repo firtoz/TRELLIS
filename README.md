@@ -9,7 +9,9 @@
 
 ***Check out our [Project Page](https://microsoft.github.io/TRELLIS/) for more videos and interactive demos!***
 
-> **Note**: This fork includes a [Replicate deployment](https://replicate.com/firtoz/trellis) for easy browser-based usage. Try TRELLIS directly in your browser without any setup!
+🚀 **[Try TRELLIS on Replicate](https://replicate.com/firtoz/trellis)** - Generate 3D models from images in your browser!
+
+> **Note**: This Replicate deployment is maintained by firtoz, a fan of the TRELLIS project, and is not officially affiliated with Microsoft or the TRELLIS team. All rights, licenses, and intellectual property belong to Microsoft. For the original project, please visit [microsoft/TRELLIS](https://github.com/microsoft/TRELLIS).
 
 <!-- Updates -->
 ## ⏩ Updates
