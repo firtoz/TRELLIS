@@ -15,11 +15,8 @@ on:
 jobs:
   push_to_replicate:
     name: Push to Replicate
-
-    # If your model is large, the default GitHub Actions runner may not 
-    # have enough disk space. If you need more space you can set up a 
-    # bigger runner on GitHub.
     runs-on: ubuntu-latest
+    environment: replicate
 
     steps:
       # This action cleans up disk space to make more room for your
