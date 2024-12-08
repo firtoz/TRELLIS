@@ -54,3 +54,5 @@ build:
     - cd /tmp/mip-splatting/submodules/diff-gaussian-rasterization && TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6" python setup.py install
 
 predict: "predict.py:Predictor"
+
+image: "r8.im/firtoz/trellis"
