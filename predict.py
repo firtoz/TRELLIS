@@ -17,7 +17,7 @@ MAX_SEED = np.iinfo(np.int32).max
 
 
 class PredictOutput(BaseModel):
-    no_background_image: Path | None = None
+    no_background_images: list[Path] | None = None
     color_video: Path | None = None
     normal_video: Path | None = None
     combined_video: Path | None = None
@@ -48,7 +48,7 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        image: Path = Input(description="Input image to generate 3D asset from"),
+        images: list[Path] = Input(description="List of input images to generate 3D asset from"),
         seed: int = Input(description="Random seed for generation", default=0),
         randomize_seed: bool = Input(description="Randomize seed", default=True),
         generate_color: bool = Input(description="Generate color video render", default=True),
@@ -93,15 +93,18 @@ class Predictor(BasePredictor):
     ) -> PredictOutput:
         """Run a single prediction on the model"""
         
-        # Load and process image
-        self.logger.info("Loading and preprocessing input image...")
-        input_image = Image.open(str(image))
-        processed_image = self.pipeline.preprocess_image(input_image)
+        # Load and process images
+        self.logger.info("Loading and preprocessing input images...")
+        input_images = [Image.open(str(image)) for image in images]
+        processed_images = [self.pipeline.preprocess_image(img) for img in input_images]
         
-        # Save the processed image (without background)
-        no_bg_path = Path("output_no_background.png")
-        processed_image.save(str(no_bg_path))
-        self.logger.info("Saved image without background")
+        # Save the processed images (without background)
+        no_bg_paths = []
+        for idx, processed_image in enumerate(processed_images):
+            no_bg_path = Path(f"output_no_background_{idx}.png")
+            processed_image.save(str(no_bg_path))
+            no_bg_paths.append(no_bg_path)
+        self.logger.info("Saved images without background")
         
         # Randomize seed if requested
         if randomize_seed:
@@ -112,20 +115,36 @@ class Predictor(BasePredictor):
         
         # Generate 3D asset
         self.logger.info("Running TRELLIS pipeline...")
-        outputs = self.pipeline.run(
-            processed_image,
-            seed=seed,
-            formats=["gaussian", "mesh"],
-            preprocess_image=False,
-            sparse_structure_sampler_params={
-                "steps": ss_sampling_steps,
-                "cfg_strength": ss_guidance_strength,
-            },
-            slat_sampler_params={
-                "steps": slat_sampling_steps,
-                "cfg_strength": slat_guidance_strength,
-            }
-        )
+        if len(processed_images) > 1:
+            outputs = self.pipeline.run_multi_image(
+                processed_images,
+                seed=seed,
+                formats=["gaussian", "mesh"],
+                preprocess_image=False,
+                sparse_structure_sampler_params={
+                    "steps": ss_sampling_steps,
+                    "cfg_strength": ss_guidance_strength,
+                },
+                slat_sampler_params={
+                    "steps": slat_sampling_steps,
+                    "cfg_strength": slat_guidance_strength,
+                }
+            )
+        else:
+            outputs = self.pipeline.run(
+                processed_images[0],
+                seed=seed,
+                formats=["gaussian", "mesh"],
+                preprocess_image=False,
+                sparse_structure_sampler_params={
+                    "steps": ss_sampling_steps,
+                    "cfg_strength": ss_guidance_strength,
+                },
+                slat_sampler_params={
+                    "steps": slat_sampling_steps,
+                    "cfg_strength": slat_guidance_strength,
+                }
+            )
         self.logger.info("TRELLIS pipeline complete!")
         self.logger.info(f"Available output formats: {outputs.keys()}")
 
@@ -206,7 +225,7 @@ class Predictor(BasePredictor):
         
         self.logger.info("Prediction complete! Returning results...")
         return PredictOutput(
-            no_background_image=no_bg_path,
+            no_background_images=no_bg_paths,
             color_video=color_path if (generate_color and not generate_normal) else None,
             normal_video=normal_path if (generate_normal and not generate_color) else None,
             combined_video=combined_path if (generate_color and generate_normal) else None,
