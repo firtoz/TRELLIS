@@ -29,6 +29,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          submodules: recursive  # Fetches all submodules recursively
 
       # This action installs Docker buildx and Cog (and optionally CUDA)
       - name: Setup Cog
