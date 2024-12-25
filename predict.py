@@ -54,6 +54,7 @@ class Predictor(BasePredictor):
         generate_color: bool = Input(description="Generate color video render", default=True),
         generate_normal: bool = Input(description="Generate normal video render", default=False),
         generate_model: bool = Input(description="Generate 3D model file (GLB)", default=False),
+        return_no_background: bool = Input(description="Return the preprocessed images without background", default=False),
         ss_guidance_strength: float = Input(
             description="Stage 1: Sparse Structure Generation - Guidance Strength",
             default=7.5,
@@ -100,11 +101,12 @@ class Predictor(BasePredictor):
         
         # Save the processed images (without background)
         no_bg_paths = []
-        for idx, processed_image in enumerate(processed_images):
-            no_bg_path = Path(f"output_no_background_{idx}.png")
-            processed_image.save(str(no_bg_path))
-            no_bg_paths.append(no_bg_path)
-        self.logger.info("Saved images without background")
+        if return_no_background:
+            for idx, processed_image in enumerate(processed_images):
+                no_bg_path = Path(f"output_no_background_{idx}.png")
+                processed_image.save(str(no_bg_path))
+                no_bg_paths.append(no_bg_path)
+            self.logger.info("Saved images without background")
         
         # Randomize seed if requested
         if randomize_seed:
@@ -225,7 +227,7 @@ class Predictor(BasePredictor):
         
         self.logger.info("Prediction complete! Returning results...")
         return PredictOutput(
-            no_background_images=no_bg_paths,
+            no_background_images=no_bg_paths if return_no_background else None,
             color_video=color_path if (generate_color and not generate_normal) else None,
             normal_video=normal_path if (generate_normal and not generate_color) else None,
             combined_video=combined_path if (generate_color and generate_normal) else None,
