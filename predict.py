@@ -22,6 +22,7 @@ class PredictOutput(BaseModel):
     normal_video: Path | None = None
     combined_video: Path | None = None
     model_file: Path | None = None
+    gaussian_ply: Path | None = None
 
 
 class Predictor(BasePredictor):
@@ -54,6 +55,7 @@ class Predictor(BasePredictor):
         generate_color: bool = Input(description="Generate color video render", default=True),
         generate_normal: bool = Input(description="Generate normal video render", default=False),
         generate_model: bool = Input(description="Generate 3D model file (GLB)", default=False),
+        save_gaussian_ply: bool = Input(description="Save Gaussian point cloud as PLY file", default=False),
         return_no_background: bool = Input(description="Return the preprocessed images without background", default=False),
         ss_guidance_strength: float = Input(
             description="Stage 1: Sparse Structure Generation - Guidance Strength",
@@ -155,6 +157,7 @@ class Predictor(BasePredictor):
         normal_path = None
         combined_path = None
         model_path = None
+        gaussian_path = None
 
         # Render videos if requested
         if generate_color or generate_normal:
@@ -225,11 +228,19 @@ class Predictor(BasePredictor):
             glb.export(str(model_path))
             self.logger.info("GLB model generation complete!")
         
+        # Save Gaussian PLY if requested
+        if save_gaussian_ply:
+            self.logger.info("Saving Gaussian point cloud as PLY...")
+            gaussian_path = Path("output_gaussian.ply")
+            outputs['gaussian'][0].save_ply(str(gaussian_path))
+            self.logger.info("Gaussian PLY file saved successfully!")
+        
         self.logger.info("Prediction complete! Returning results...")
         return PredictOutput(
             no_background_images=no_bg_paths if return_no_background else None,
             color_video=color_path if (generate_color and not generate_normal) else None,
             normal_video=normal_path if (generate_normal and not generate_color) else None,
             combined_video=combined_path if (generate_color and generate_normal) else None,
-            model_file=model_path
+            model_file=model_path,
+            gaussian_ply=gaussian_path if save_gaussian_ply else None
         )
