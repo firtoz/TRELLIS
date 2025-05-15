@@ -36,12 +36,13 @@ build:
     - pip install --no-cache-dir torch==2.1.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
     - pip install --no-cache-dir torchvision==0.16.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
     - pip install --no-cache-dir xformers==0.0.22.post7 --extra-index-url https://download.pytorch.org/whl/cu118
+    - pip install --no-cache-dir flash-attn==2.3.6
     - pip install --no-cache-dir spconv-cu118
     # Install other dependencies in smaller chunks
     - pip install --no-cache-dir numpy scipy pillow
     - pip install --no-cache-dir imageio imageio-ffmpeg tqdm easydict
     - pip install --no-cache-dir rembg onnxruntime
-    - pip install --no-cache-dir trimesh xatlas pyvista pymeshfix
+    - pip install --no-cache-dir trimesh open3d xatlas pyvista pymeshfix
     - pip install --no-cache-dir igraph transformers huggingface_hub
     # Install utils3d
     - pip install git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8
@@ -49,9 +50,14 @@ build:
     - pip install kaolin -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.2_cu118.html
     # Install nvdiffrast
     - git clone https://github.com/NVlabs/nvdiffrast.git /tmp/nvdiffrast && pip install /tmp/nvdiffrast
+    # Install diffoctreerast for octree rendering (required for radiance fields)
+    - git clone --recurse-submodules https://github.com/JeffreyXiang/diffoctreerast.git /tmp/diffoctreerast && pip install /tmp/diffoctreerast
     # Install diff-gaussian-rasterization from mip-splatting
     - git clone https://github.com/autonomousvision/mip-splatting.git /tmp/mip-splatting
     - cd /tmp/mip-splatting/submodules/diff-gaussian-rasterization && TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6" python setup.py install
+
+    # Install training dependencies (needed for text-to-3D functionality)
+    - pip install tensorboard pandas lpips
 
 predict: "predict.py:Predictor"
 
