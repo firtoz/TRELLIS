@@ -1,6 +1,8 @@
+import re
 import numpy as np
 import cv2
 import torch
+import contextlib
 
 
 # Dictionary utils
@@ -115,6 +117,16 @@ def dict_flatten(dic, sep='.'):
     return flat_dict
 
 
+# Context utils
+@contextlib.contextmanager
+def nested_contexts(*contexts):
+    with contextlib.ExitStack() as stack:
+        for ctx in contexts:
+            stack.enter_context(ctx())
+        yield
+
+
+# Image utils
 def make_grid(images, nrow=None, ncol=None, aspect_ratio=None):
     num_images = len(images)
     if nrow is None and ncol is None:
@@ -129,8 +141,11 @@ def make_grid(images, nrow=None, ncol=None, aspect_ratio=None):
         ncol = (num_images + nrow - 1) // nrow
     else:
         assert nrow * ncol >= num_images, 'nrow * ncol must be greater than or equal to the number of images'
-        
-    grid = np.zeros((nrow * images[0].shape[0], ncol * images[0].shape[1], images[0].shape[2]), dtype=images[0].dtype)
+    
+    if images[0].ndim == 2:
+        grid = np.zeros((nrow * images[0].shape[0], ncol * images[0].shape[1]), dtype=images[0].dtype)
+    else:
+        grid = np.zeros((nrow * images[0].shape[0], ncol * images[0].shape[1], images[0].shape[2]), dtype=images[0].dtype)
     for i, img in enumerate(images):
         row = i // ncol
         col = i % ncol

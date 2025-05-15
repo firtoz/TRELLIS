@@ -4,15 +4,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from tqdm import tqdm
-from easydict import EasyDict as edict
 from torchvision import transforms
 from PIL import Image
 import rembg
 from .base import Pipeline
 from . import samplers
 from ..modules import sparse as sp
-from ..representations import Gaussian, Strivec, MeshExtractResult
 
 
 class TrellisImageTo3DPipeline(Pipeline):
@@ -271,8 +268,10 @@ class TrellisImageTo3DPipeline(Pipeline):
         Args:
             image (Image.Image): The image prompt.
             num_samples (int): The number of samples to generate.
+            seed (int): The random seed.
             sparse_structure_sampler_params (dict): Additional parameters for the sparse structure sampler.
             slat_sampler_params (dict): Additional parameters for the structured latent sampler.
+            formats (List[str]): The formats to decode the structured latent to.
             preprocess_image (bool): Whether to preprocess the image.
         """
         if preprocess_image:
