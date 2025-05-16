@@ -7,7 +7,7 @@ build:
   system_packages:
     - "libgl1-mesa-glx"
     - "libglib2.0-0"
-    - "cuda-toolkit-11-8"
+    - "cuda-toolkit-12-1"
     - "ninja-build"
     - "git"
     - "python3-opencv"
@@ -33,11 +33,11 @@ build:
     # Update pip first
     - pip install --upgrade pip
     # Install PyTorch and CUDA dependencies first
-    - pip install --no-cache-dir torch==2.1.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
-    - pip install --no-cache-dir torchvision==0.16.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
-    - pip install --no-cache-dir xformers==0.0.22.post7 --extra-index-url https://download.pytorch.org/whl/cu118
+    - pip install --no-cache-dir torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2 --index-url https://download.pytorch.org/whl/cu121
+    - pip install --no-cache-dir xformers==0.0.23 --index-url https://download.pytorch.org/whl/cu121
     - pip install --no-cache-dir flash-attn==2.3.6
-    - pip install --no-cache-dir spconv-cu118
+    # The latest spconv version that's compatible with CUDA 12+
+    - pip install --no-cache-dir spconv-cu121
     # Install other dependencies in smaller chunks
     - pip install --no-cache-dir numpy scipy pillow
     - pip install --no-cache-dir imageio imageio-ffmpeg tqdm easydict
@@ -47,7 +47,7 @@ build:
     # Install utils3d
     - pip install git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8
     # Install kaolin
-    - pip install kaolin -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.2_cu118.html
+    - pip install kaolin -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.1.2_cu121.html
     # Install nvdiffrast
     - git clone https://github.com/NVlabs/nvdiffrast.git /tmp/nvdiffrast && pip install /tmp/nvdiffrast
     # Install diffoctreerast for octree rendering (required for radiance fields)
