@@ -51,7 +51,8 @@ build:
     # Install nvdiffrast
     - git clone https://github.com/NVlabs/nvdiffrast.git /tmp/nvdiffrast && pip install /tmp/nvdiffrast
     # Install diffoctreerast for octree rendering (required for radiance fields)
-    - git clone --recurse-submodules https://github.com/JeffreyXiang/diffoctreerast.git /tmp/diffoctreerast && pip install /tmp/diffoctreerast
+    - git clone --recurse-submodules https://github.com/JeffreyXiang/diffoctreerast.git /tmp/diffoctreerast
+    - cd /tmp/diffoctreerast && TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6" python setup.py install
     # Install diff-gaussian-rasterization from mip-splatting
     - git clone https://github.com/autonomousvision/mip-splatting.git /tmp/mip-splatting
     - cd /tmp/mip-splatting/submodules/diff-gaussian-rasterization && TORCH_CUDA_ARCH_LIST="7.0;7.5;8.0;8.6" python setup.py install
