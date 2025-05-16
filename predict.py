@@ -36,7 +36,7 @@ class Predictor(BasePredictor):
         os.environ['ATTN_BACKEND'] = 'xformers'
         
         self.logger.info("Loading TRELLIS pipeline...")
-        self.pipeline = TrellisImageTo3DPipeline.from_pretrained("JeffreyXiang/TRELLIS-image-large")
+        self.pipeline = TrellisImageTo3DPipeline.from_pretrained("gqk/TRELLIS-image-large-fork")
         self.pipeline.cuda()
         
         self.logger.info("Preloading rembg...")
