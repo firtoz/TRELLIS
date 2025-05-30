@@ -31,19 +31,9 @@
 - Implementation of multi-image conditioning for **TRELLIS-image** model. ([#7](https://github.com/microsoft/TRELLIS/issues/7)). This is based on tuning-free algorithm without training a specialized model, so it may not give the best results for all input images.
 - Add Gaussian export in `app.py` and `example.py`. ([#40](https://github.com/microsoft/TRELLIS/issues/40))
 
-## Model Description
+## 🚀 Getting Started
 
-TRELLIS uses a unified Structured LATent (SLAT) representation that enables generation of different 3D output formats. The model deployed here is TRELLIS-image-large, which contains 1.2B parameters and is trained on a diverse dataset of 500K 3D objects.
-
-Key features:
-- Generate high-quality 3D assets from input images
-- Multiple output formats: 3D Gaussians, Radiance Fields, and textured meshes
-- Detailed shape and texture generation
-- Support for various viewpoint renderings
-
-For more examples and to try it directly in your browser, visit the [Replicate model page](https://replicate.com/firtoz/trellis).
-
-## Installation
+### Installation
 
 1. Clone this repository with submodules:
     ```sh
@@ -83,7 +73,9 @@ For more examples and to try it directly in your browser, visit the [Replicate m
         --demo                  Install all dependencies for demo
     ```
 
-## Pretrained Models
+## 🤖 Pretrained Models
+
+We provide the following pretrained models:
 
 | Model | Description | #Params | Download |
 | --- | --- | --- | --- |
@@ -96,11 +88,19 @@ For more examples and to try it directly in your browser, visit the [Replicate m
 
 *Note: All VAEs are included in **TRELLIS-image-large** model repo.*
 
-## Minimal Example
-
+The models are hosted on Hugging Face. You can directly load the models with their repository names in the code:
 ```python
 TrellisImageTo3DPipeline.from_pretrained("microsoft/TRELLIS-image-large")
 ```
+
+If you prefer loading the model from local, you can download the model files from the links above and load the model with the folder path (folder structure should be maintained):
+```python
+TrellisImageTo3DPipeline.from_pretrained("/path/to/TRELLIS-image-large")
+```
+
+## 💡 Usage
+
+Here is an [example](example.py) of how to use the pretrained models for 3D asset generation.
 
 ### Local Usage
 
@@ -165,7 +165,7 @@ After running the code, you will get the following files:
 - `sample.glb`: a GLB file containing the extracted textured mesh
 - `sample.ply`: a PLY file containing the 3D Gaussian representation
 
-### Replicate Usage
+### Replicate API
 
 ```python
 import replicate
